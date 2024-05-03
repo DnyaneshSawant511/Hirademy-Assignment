@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import Spinner from "../components/Spinner";
+import { Link } from "react-router-dom";
 
 const BookHome = () => {
     const [books, setBooks] = useState([]);
@@ -48,8 +49,8 @@ const BookHome = () => {
                                         <td className="border border-slate-700 rounded-md text-center p-3 font-medium">
                                             {book.id}
                                         </td>
-                                        <td className="border border-slate-700 rounded-md text-center p-3 font-medium">
-                                            {book.title}
+                                        <td className="border border-slate-700 rounded-md text-center p-3 font-medium titleHover">
+                                            <Link to={`/books/${book.id}`}>{book.title}</Link>
                                         </td>
                                         <td className="border border-slate-700 rounded-md text-center max-md:hidden p-3 font-medium">
                                             {book.pageCount}
