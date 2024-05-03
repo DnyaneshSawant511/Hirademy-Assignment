@@ -8,6 +8,7 @@ const BookHome = () => {
     const [loading, setLoading] = useState(false);
     const [maxPages, setMaxPages] = useState(0);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isbnSearch, setIsbnSearch] = useState('');
 
     useEffect(() => {
         setLoading(true);
@@ -27,18 +28,38 @@ const BookHome = () => {
         setSearchTerm(event.target.value);
     }
 
+    const handleIsbnSearchChange = (event) => {
+        setIsbnSearch(event.target.value);
+    }
+
     const handleMaxPagesChange = (event) => {
         const value = parseInt(event.target.value);
         setMaxPages(value);
     }
 
     const filteredBooks = books.filter(book => {
-        if(searchTerm==''){
+        const titleMatch = book.title && book.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const isbnMatch = book.isbn && book.isbn.toLowerCase().includes(isbnSearch.toLowerCase());
+        
+        if (searchTerm === '' && isbnSearch === '') {
             return true;
         }
-        return book.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+        if (searchTerm !== '' && isbnSearch !== '') {
+            return titleMatch && isbnMatch;
+        }
+
+        if (searchTerm !== '') {
+            return titleMatch;
+        }
+
+        if (isbnSearch !== '') {
+            return isbnMatch;
+        }
+
+        return false;
     }).filter(book => {
-        if(maxPages === 0){
+        if(maxPages === 0 || maxPages === ''){
             return true;
         }
         return book.pageCount <= maxPages;
@@ -48,24 +69,51 @@ const BookHome = () => {
         <div>
             <div className="p-4">
             <div className="flex justify-between items-center bg-gray-100 py-4 px-6 shadow-md rounded-lg mb-4">
-                <h1 className="text-3xl text-gray-800 font-semibold inline-flex items-center font-serif">
-                    <span className="text-sky-500 text-4xl mr-2">📚</span> Hirademy Book Shelf
-                </h1>
+                <Link to='/books'>
+                    <h1 className="text-3xl text-gray-800 font-semibold inline-flex items-center font-serif">
+                        <span className="text-sky-500 text-4xl mr-2">📚</span> Hirademy Book Shelf
+                    </h1>
+                </Link>
             </div>
 
             <div className="flex justify-between items-center mb-4">
-                <input type="text" 
-                placeholder="Search by title" 
-                value={searchTerm} 
-                onChange={handleSearchTermChange} 
-                className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" />
-
-                <input type="number" 
-                placeholder="Max Pages" 
-                value={maxPages} 
-                onChange={handleMaxPagesChange} 
-                className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" />
+                <div className="flex space-x-4">
+                    <div className="flex flex-col">
+                        <label htmlFor="titleSearch" className="block text-sm font-medium text-gray-700">Search by title</label>
+                        <input 
+                            type="text" 
+                            id="titleSearch" 
+                            placeholder="Search by title" 
+                            value={searchTerm} 
+                            onChange={handleSearchTermChange} 
+                            className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" 
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label htmlFor="isbnSearch" className="block text-sm font-medium text-gray-700">Search by ISBN</label>
+                        <input 
+                            type="text" 
+                            id="isbnSearch" 
+                            placeholder="Search by ISBN" 
+                            value={isbnSearch} 
+                            onChange={handleIsbnSearchChange} 
+                            className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" 
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <label htmlFor="maxPages" className="block text-sm font-medium text-gray-700">Max Pages</label>
+                        <input 
+                            type="number" 
+                            id="maxPages" 
+                            placeholder="Max Pages" 
+                            value={maxPages} 
+                            onChange={handleMaxPagesChange} 
+                            className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" 
+                        />
+                    </div>
+                </div>
             </div>
+
 
             {
                 loading ? (

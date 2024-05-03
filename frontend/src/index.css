@@ -6,10 +6,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.titleHover:hover {
-    letter-spacing: 1px;
-}
-
 .wrapper {
     height: 100vh;
     width: 100%;
