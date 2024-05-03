@@ -34,7 +34,7 @@ const BookDetails = () => {
             ) : (
                 <div className="wrapper">
                     <div className="box bg-gray-100 text-gray-800-500">
-                        <Link to={'/books'}>⬅</Link>
+                        <Link to={'/books'} className="backArrow">⬅</Link>
                         <div className="subBox">
                             <h3><b>Title : </b></h3>
                             <h3 className="font-semibold">{book.title}</h3>
