@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 const BookHome = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [maxPages, setMaxPages] = useState(0);
+    const [searchTerm, setSearchTerm] = useState('');
+
     useEffect(() => {
         setLoading(true);
         axios.get('https://softwium.com/api/books')
@@ -19,6 +22,28 @@ const BookHome = () => {
             setLoading(false);
         });
     }, []);
+
+    const handleSearchTermChange = (event) => {
+        setSearchTerm(event.target.value);
+    }
+
+    const handleMaxPagesChange = (event) => {
+        const value = parseInt(event.target.value);
+        setMaxPages(value);
+    }
+
+    const filteredBooks = books.filter(book => {
+        if(searchTerm==''){
+            return true;
+        }
+        return book.title.toLowerCase().includes(searchTerm.toLowerCase());
+    }).filter(book => {
+        if(maxPages === 0){
+            return true;
+        }
+        return book.pageCount <= maxPages;
+    });
+
     return (
         <div>
             <div className="p-4">
@@ -26,6 +51,20 @@ const BookHome = () => {
                 <h1 className="text-3xl text-gray-800 font-semibold inline-flex items-center font-serif">
                     <span className="text-sky-500 text-4xl mr-2">📚</span> Hirademy Book Shelf
                 </h1>
+            </div>
+
+            <div className="flex justify-between items-center mb-4">
+                <input type="text" 
+                placeholder="Search by title" 
+                value={searchTerm} 
+                onChange={handleSearchTermChange} 
+                className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" />
+
+                <input type="number" 
+                placeholder="Max Pages" 
+                value={maxPages} 
+                onChange={handleMaxPagesChange} 
+                className="border border-gray-300 rounded-md px-3 py-1 focus:outline-none focus:border-blue-500" />
             </div>
 
             {
@@ -44,7 +83,7 @@ const BookHome = () => {
                         </thead>
                         <tbody>
                             {
-                                books.map((book, index) => (
+                                filteredBooks.map((book, index) => (
                                     <tr  className="h-8">
                                         <td className="border border-slate-700 rounded-md text-center p-3 font-medium">
                                             {book.id}
